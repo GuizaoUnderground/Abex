@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Área do Prestador - Precisou? Encontre aqui!</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Área do Prestador</h1>
+    <nav>
+      <a href="index.html">Sair</a>
+    </nav>
+  </header>
+  <main class="container">
+    <h2>Interessados em seu serviço</h2>
+    <div id="clientes-interessados" class="servicos-grid">
+      </div>
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = JSON.parse(localStorage.getItem('user'));
+
+      if (!userData || userData.type !== 'colaborador') {
+        alert('Você precisa estar logado como prestador para acessar esta página.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const prestadorId = userData.id; 
+      
+      const listaInteressados = document.getElementById('clientes-interessados');
+      listaInteressados.innerHTML = '<p>Carregando clientes interessados...</p>';
+
+      fetch(`http://localhost:3000/interesses/${prestadorId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro na rede ou ao buscar os dados.');
+          }
+          return response.json();
+        })
+        .then(interesses => {
+          listaInteressados.innerHTML = '';
+          if (interesses.length === 0) {
+            listaInteressados.innerHTML = '<p>Nenhum cliente demonstrou interesse ainda.</p>';
+            return;
+          }
+
+          interesses.forEach(interesse => {
+            const divCliente = document.createElement('div');
+            divCliente.classList.add('profissional'); 
+            divCliente.innerHTML = `
+              <h3>${interesse.nome_cliente}</h3>
+              <p>Contato: ${interesse.email_cliente} | ${interesse.telefone_cliente}</p>
+              <button class="btn-confirmar" data-interesse-id="${interesse.id}">Confirmar Atendimento</button>
+            `;
+            listaInteressados.appendChild(divCliente);
+          });
+          
+          const botoesConfirmar = document.querySelectorAll('.btn-confirmar');
+          botoesConfirmar.forEach(botao => {
+            botao.addEventListener('click', (e) => {
+              const interesseId = e.target.dataset.interesseId;
+              confirmarAtendimento(interesseId, e.target);
+            });
+          });
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          listaInteressados.innerHTML = '<p style="color: red; font-weight: bold;">Não foi possível carregar a lista de interessados.</p>';
+        });
+    });
+
+    function confirmarAtendimento(interesseId, button) {
+      fetch('http://localhost:3000/confirmar-atendimento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ interesseId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        // Desativar o botão após a confirmação
+        button.disabled = true;
+        button.textContent = 'Atendimento Confirmado';
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao confirmar atendimento.');
+      });
+    }
+  </script>
+</body>
+</html>

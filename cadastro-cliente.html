@@ -6,101 +6,110 @@
   <title>Cadastro Cliente - Precisou? Encontre aqui!</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <h1>Cadastro de Cliente</h1>
-  <form id="cadastroForm" method="POST">
-    <input type="text" name="nome" placeholder="Seu nome completo" required />
-    <input type="email" name="email" placeholder="Seu e-mail" required />
-    <input
-      type="tel"
-      id="telefone"
-      name="telefone"
-      placeholder="(XX) XXXXX-XXXX"
-      maxlength="15"
-      required
-      autocomplete="off"
-    />
-    <button type="submit">Enviar Cadastro</button>
-  </form>
-  <p><a href="index.html">← Voltar para a página inicial</a></p>
+<body class="form-page">
+  <div class="container">
+    <form id="cadastroForm" method="POST">
+      <h1>Cadastro de Cliente</h1>
+      
+      <div class="cadastro-type-selector">
+        <a href="cadastro-cliente.html" class="btn active">Sou Cliente</a>
+        <a href="cadastro-prestador.html" class="btn btn-secondary">Sou Prestador</a>
+      </div>
 
-  <div id="mensagemSucesso" style="color: green; font-weight: bold; margin-top: 20px; display: none;">
-    Cadastro realizado com sucesso!
-  </div>
-  <div id="mensagemErro" style="color: red; font-weight: bold; margin-top: 20px; display: none;">
-    Erro ao realizar cadastro.
+      <input type="text" name="nome" placeholder="Seu nome completo" required />
+      <input type="email" name="email" placeholder="Seu e-mail" required />
+      
+      <input
+        type="tel"
+        id="telefone"
+        name="telefone"
+        placeholder="(XX) XXXXX-XXXX"
+        maxlength="15"
+        required
+        autocomplete="off"
+      />
+      <input type="text" name="cidade" placeholder="Sua cidade" required />
+      <input type="password" name="senha" placeholder="Crie uma senha" required />
+
+      <div id="mensagemSucesso" class="mensagem" style="display: none;">
+        Cadastro realizado com sucesso!
+      </div>
+      <div id="mensagemErro" class="mensagem" style="display: none;">
+        Erro ao realizar cadastro.
+      </div>
+        
+      <button type="submit">Enviar Cadastro</button>
+
+      <a href="index.html" class="btn btn-secondary btn-voltar">← Voltar para a Página Inicial</a>
+    </form>
   </div>
 
+  <script src="https://unpkg.com/imask"></script>
   <script>
-    const telefoneInput = document.getElementById('telefone');
-    const form = document.getElementById('cadastroForm');
-    const mensagemSucesso = document.getElementById('mensagemSucesso');
-    const mensagemErro = document.getElementById('mensagemErro');
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('cadastroForm');
+      const telefoneInput = document.getElementById('telefone');
+      const mensagemSucesso = document.getElementById('mensagemSucesso');
+      const mensagemErro = document.getElementById('mensagemErro');
 
-    telefoneInput.addEventListener('input', function (e) {
-      let x = e.target.value.replace(/\D/g, '').slice(0, 11);
-      let formatted = '';
+      IMask(telefoneInput, {
+        mask: '(00) 00000-0000'
+      });
 
-      if (x.length > 0) {
-        formatted += '(' + x.substring(0, 2);
-      }
-      if (x.length >= 3) {
-        formatted += ') ' + x.substring(2, 7);
-      }
-      if (x.length >= 8) {
-        formatted += '-' + x.substring(7, 11);
-      }
-
-      e.target.value = formatted;
-    });
-
-    function validarTelefone() {
-      const telefone = telefoneInput.value;
-      const regex = /^\(\d{2}\) \d{5}-\d{4}$/;
-      if (!regex.test(telefone)) {
-        alert('Por favor, digite um telefone válido no formato (XX) XXXXX-XXXX');
-        telefoneInput.focus();
-        return false;
-      }
-      return true;
-    }
-
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      mensagemSucesso.style.display = 'none';
-      mensagemErro.style.display = 'none';
-
-      if (!validarTelefone()) {
-        return;
-      }
-
-      const formData = {
-        nome: form.nome.value.trim(),
-        email: form.email.value.trim(),
-        telefone: form.telefone.value.trim()
-      };
-
-      fetch('http://localhost:3000/cadastro-cliente', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.message) {
-          mensagemSucesso.style.display = 'block';
-          form.reset();
-        } else if (data.error) {
-          mensagemErro.textContent = data.error;
+      function validarTelefone() {
+        const telefoneSemMascara = telefoneInput.value.replace(/\D/g, '');
+        if (telefoneSemMascara.length !== 11) {
+          mensagemErro.textContent = 'O telefone deve ter 11 dígitos (DDD + número).';
           mensagemErro.style.display = 'block';
+          telefoneInput.focus();
+          return false;
         }
-      })
-      .catch(() => {
-        mensagemErro.textContent = 'Erro na rede, tente novamente mais tarde.';
-        mensagemErro.style.display = 'block';
+        return true;
+      }
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        mensagemSucesso.style.display = 'none';
+        mensagemErro.style.display = 'none';
+        mensagemErro.textContent = ''; 
+        if (!validarTelefone()) {
+          return;
+        }
+
+        const formData = {
+          nome: form.nome.value.trim(),
+          email: form.email.value.trim(),
+          telefone: form.telefone.value.trim(),
+          cidade: form.cidade.value.trim(),
+          senha: form.senha.value
+        };
+
+        fetch('http://localhost:3000/cadastro-cliente', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => {
+              throw new Error(err.error || 'Erro no servidor.');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.message) {
+            mensagemSucesso.style.display = 'block';
+            form.reset();
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          mensagemErro.textContent = error.message || 'Erro na rede, tente novamente.';
+          mensagemErro.style.display = 'block';
+        });
       });
     });
   </script>

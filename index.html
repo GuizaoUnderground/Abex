@@ -3,61 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Precisou? Encontre aqui!</title>
+  <title>Zaplar | Profissionais confiáveis, perto de você!</title>
   <link rel="stylesheet" href="style.css" />
-</head>
+  </head>
 <body>
 
   <header>
-    <h1>Precisou? Encontre aqui!</h1>
-    <nav>
+    <div class="logo-container">
+        <img src="logo.png" alt="Logo Zaplar">
+        <h1><span class="zap">Zap</span><span class="lar">Lar</span></h1>
+    </div>
+    <nav class="main-nav">
       <a href="#servicos">Serviços</a>
-      <a href="#sobre">Sobre</a>
-      <a href="cadastro-prestador.html">Cadastro Prestador</a>
-      <a href="cadastro-cliente.html">Cadastro Cliente</a>
+      <a href="#why-choose-us">Por que nos escolher?</a>
+      <a href="login.html">Login</a>
+      <a href="cadastro-cliente.html" class="btn btn-cadastro">Cadastre-se</a>
     </nav>
   </header>
 
   <section class="hero">
-    <h1>Profissionais confiáveis, perto de você!</h1>
-    <p>Eletricistas, encanadores, jardineiros e muito mais.</p>
+    <div class="container">
+        <h1>Profissionais confiáveis, perto de você!</h1>
+        <p>Encontre eletricistas, encanadores, jardineiros e mais, com apenas um toque.</p>
+        <div class="hero-cta">
+          <a href="cadastro-cliente.html" class="btn">Encontre um profissional agora!</a>
+        </div>
+    </div>
   </section>
 
   <section id="servicos" class="servicos">
-    <h2>Nossos Serviços</h2>
+    <div class="container">
+      <h2>Nossos Serviços</h2>
+      <div class="servicos-grid">
+          <div class="servico-item">
+            <a href="eletricista.html">
+              <div class="servico-icon">
+                <img src="icons/bolt.svg" alt="Ícone de Eletricista"> 
+              </div>
+              <h3>Eletricista</h3>
+              <p>Instalação e manutenção elétrica com segurança.</p>
+            </a>
+          </div>
 
-    <div class="servico-item">
-      <h3> <a href="eletricista.html">Eletricista</a></h3>
-      <p>Instalações, manutenção, troca de fiação e mais.</p>
-    </div>
+          <div class="servico-item">
+            <a href="encanador.html">
+              <div class="servico-icon">
+                <img src="icons/faucet-drip.svg" alt="Ícone de Encanador"> 
+              </div>
+              <h3>Encanador</h3>
+              <p>Reparos hidráulicos e desentupimento.</p>
+            </a>
+          </div>
 
-    <div class="servico-item">
-      <h3> <a href="encanador.html">Encanador</a></h3>
-      <p>Reparos em vazamentos, desentupimentos e instalações hidráulicas.</p>
-    </div>
-
-    <div class="servico-item">
-      <h3> <a href="jardineiro.html">Jardineiro</a></h3>
-      <p>Cuidados com o jardim, poda, plantio e manutenção.</p>
+          <div class="servico-item">
+            <a href="jardineiro.html">
+              <div class="servico-icon">
+                <img src="icons/leaf.svg" alt="Ícone de Jardineiro"> 
+              </div>
+              <h3>Jardineiro</h3>
+              <p>Cuidados para deixar seu jardim impecável.</p>
+            </a>
+          </div>
+      </div>
     </div>
   </section>
 
-  <section id="sobre" class="sobre">
-    <h2>Sobre Nós</h2>
-    <p>Somos a plataforma “Precisou? Encontre aqui!”, que conecta você com os melhores profissionais da sua região. Nosso objetivo é oferecer serviços de qualidade com segurança, agilidade e confiança.</p>
+  <section id="why-choose-us" class="why-choose-us">
+    <div class="container">
+      <h2>Por que nos escolher?</h2>
+      <div class="why-choose-us-grid">
+        <div class="reason-item">
+          <i class="fas fa-check-circle"></i>
+          <h3>Profissionais Verificados</h3>
+          <p>Todos os prestadores de serviço são verificados para garantir sua segurança e confiança.</p>
+        </div>
+        <div class="reason-item">
+          <i class="fas fa-handshake"></i>
+          <h3>Serviços de Qualidade</h3>
+          <p>Oferecemos acesso aos melhores profissionais da sua região, com avaliações de outros clientes.</p>
+        </div>
+        <div class="reason-item">
+          <i class="fas fa-clock"></i>
+          <h3>Agilidade e Conveniência</h3>
+          <p>Encontre e entre em contato com um profissional em poucos minutos, sem burocracia.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="cadastros" style="text-align:center; padding: 30px 20px;">
-    <h2>Cadastre-se</h2>
+  <section class="cadastros container">
+    <h2>Junte-se à nossa comunidade!</h2>
     <p>Seja um prestador de serviço ou um cliente, faça seu cadastro!</p>
-    <a href="cadastro-prestador.html" style="margin-right:20px; background-color:#0077cc; color:white; padding:10px 20px; border-radius:5px; text-decoration:none;">Cadastro Prestador</a>
-    <a href="cadastro-cliente.html" style="background-color:#0077cc; color:white; padding:10px 20px; border-radius:5px; text-decoration:none;">Cadastro Cliente</a>
+    <a href="cadastro-prestador.html" class="btn">Sou Prestador</a>
+    <a href="cadastro-cliente.html" class="btn btn-secondary">Sou Cliente</a>
   </section>
-  
+
   <footer>
-    <p>&copy; 2025 Precisou? Encontre aqui! Todos os direitos reservados.</p>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4><span class="zap">Zap</span><span class="lar">Lar</span></h4>
+          <p>Conectando você aos melhores profissionais da sua região.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Links Úteis</h4>
+          <ul>
+            <li><a href="#servicos">Serviços</a></li>
+            <li><a href="#why-choose-us">Por que nos escolher?</a></li>
+            <li><a href="login.html">Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Cadastro</h4>
+          <ul>
+            <li><a href="cadastro-prestador.html">Cadastrar como Prestador</a></li>
+            <li><a href="cadastro-cliente.html">Cadastrar como Cliente</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2025 <span class="zap">Zap</span><span class="lar">Lar</span>. Todos os direitos reservados.
+      </div>
+    </div>
   </footer>
 
 </body>
 </html>
-

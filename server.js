@@ -15,7 +15,6 @@ const db = new sqlite3.Database('./abex.db', (err) => {
   } else {
     console.log('Banco SQLite conectado.');
 
-    // Tabela clientes
     db.run(`
       CREATE TABLE IF NOT EXISTS clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,7 +24,6 @@ const db = new sqlite3.Database('./abex.db', (err) => {
       )
     `);
 
-    // Tabela prestadores
     db.run(`
       CREATE TABLE IF NOT EXISTS prestadores (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +37,6 @@ const db = new sqlite3.Database('./abex.db', (err) => {
   }
 });
 
-// Cadastro Clientes
 app.post('/cadastro-cliente', (req, res) => {
   const { nome, email, telefone } = req.body;
 
@@ -57,7 +54,6 @@ app.post('/cadastro-cliente', (req, res) => {
   });
 });
 
-// Cadastro Prestador
 app.post('/cadastro-prestador', (req, res) => {
   const { nome, email, telefone, servico, descricao } = req.body;
 

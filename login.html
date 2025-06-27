@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Precisou? Encontre aqui!</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-container h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .user-type-selector {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .user-type-selector button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      color: #555;
+    }
+
+    .user-type-selector button.active {
+      background-color: #0077cc;
+      color: #fff;
+    }
+
+    .user-type-selector button:not(.active):hover {
+      background-color: #e9e9e9;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    form input[type="email"],
+    form input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    form button[type="submit"] {
+      background-color: #28a745;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button[type="submit"]:hover {
+      background-color: #218838;
+    }
+
+    .links {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .links a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+      color: #005fa3;
+    }
+
+    @media (max-width: 500px) {
+      .login-container {
+        margin: 20px;
+        padding: 25px;
+      }
+
+      .user-type-selector {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Login</h1>
+    <div class="user-type-selector">
+      <button id="clienteBtn" class="active">Cliente</button>
+      <button id="colaboradorBtn">Colaborador</button>
+    </div>
+    
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="E-mail" required />
+      <input type="password" name="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+
+    <div class="links">
+      <a href="cadastro-cliente.html">Não tem conta? Cadastre-se como Cliente</a>
+      <a href="cadastro-prestador.html">Cadastre-se como Prestador</a>
+      <a href="index.html">← Voltar para a página inicial</a>
+    </div>
+  </div>
+
+  <script>
+    const clienteBtn = document.getElementById('clienteBtn');
+    const colaboradorBtn = document.getElementById('colaboradorBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerLink = document.querySelector('.links a[href="cadastro-cliente.html"]');
+
+    let userType = 'cliente';
+    function setActiveButton(activeButton, inactiveButton) {
+      activeButton.classList.add('active');
+      inactiveButton.classList.remove('active');
+    }
+
+    clienteBtn.addEventListener('click', () => {
+      userType = 'cliente';
+      setActiveButton(clienteBtn, colaboradorBtn);
+      registerLink.textContent = 'Não tem conta? Cadastre-se como Cliente';
+      registerLink.href = 'cadastro-cliente.html';
+      console.log('Modo de login: Cliente');
+    });
+
+    colaboradorBtn.addEventListener('click', () => {
+      userType = 'colaborador';
+      setActiveButton(colaboradorBtn, clienteBtn);
+      registerLink.textContent = 'Não tem conta? Cadastre-se como Prestador';
+      registerLink.href = 'cadastro-prestador.html';
+      console.log('Modo de login: Colaborador');
+    });
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const email = loginForm.email.value;
+      const senha = loginForm.senha.value;
+      
+      fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha, userType })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          alert('Login bem-sucedido!');
+          window.location.href = data.redirectUrl;
+        } else {
+          alert(data.message || 'E-mail ou senha incorretos.');
+        }
+      })
+      .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro ao conectar com o servidor.');
+      });
+    });
+  </script>
+</body>
+</html>

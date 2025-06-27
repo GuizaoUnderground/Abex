@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Área do Cliente - Precisou? Encontre aqui!</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Bem-vindo, Cliente!</h1>
+    <nav>
+      <a href="index.html">Sair</a>
+    </nav>
+  </header>
+  <main class="container">
+    <h2>Profissionais em sua cidade</h2>
+    <div id="profissionais-disponiveis" class="servicos-grid">
+      </div>
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = JSON.parse(localStorage.getItem('user'));
+      
+      if (!userData || userData.type !== 'cliente') {
+        alert('Você precisa estar logado como cliente para acessar esta página.');
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      const userCity = userData.cidade; 
+      const clienteId = userData.id; 
+      const listaProfissionais = document.getElementById('profissionais-disponiveis');
+      listaProfissionais.innerHTML = '<p>Carregando profissionais da sua cidade...</p>';
+
+      fetch(`http://localhost:3000/prestadores/cidade/${userCity}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro na rede ou ao buscar os dados.');
+          }
+          return response.json();
+        })
+        .then(prestadores => {
+          listaProfissionais.innerHTML = '';
+          if (prestadores.length === 0) {
+            listaProfissionais.innerHTML = '<p>Nenhum profissional encontrado em sua cidade.</p>';
+            return;
+          }
+
+          prestadores.forEach(prestador => {
+            const divProfissional = document.createElement('div');
+            divProfissional.classList.add('profissional');
+            divProfissional.innerHTML = `
+              <h3>${prestador.nome} (${prestador.servico})</h3>
+              <p>${prestador.descricao}</p>
+              <button class="btn-interesse" data-prestador-id="${prestador.id}">Tenho interesse!</button>
+            `;
+            listaProfissionais.appendChild(divProfissional);
+          });
+          
+          const botoesInteresse = document.querySelectorAll('.btn-interesse');
+          botoesInteresse.forEach(botao => {
+            botao.addEventListener('click', (e) => {
+              const prestadorId = e.target.dataset.prestadorId;
+              registrarInteresse(clienteId, prestadorId, e.target);
+            });
+          });
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          listaProfissionais.innerHTML = '<p style="color: red; font-weight: bold;">Não foi possível carregar a lista de profissionais. Tente novamente mais tarde.</p>';
+        });
+    });
+
+    function registrarInteresse(clienteId, prestadorId, button) {
+      fetch('http://localhost:3000/interesse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clienteId, prestadorId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        // Desativa o botão para evitar múltiplos cliques
+        button.disabled = true;
+        button.textContent = 'Interesse Registrado';
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao registrar interesse.');
+      });
+    }
+  </script>
+</body>
+</html>

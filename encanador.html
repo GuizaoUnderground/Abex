@@ -3,35 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Encanador - Precisou? Encontre aqui!</title>
+  <title>Encanador - Zaplar</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
-    <h1>🚰 Encanador</h1>
-    <p><a href="index.html">← Voltar para a página inicial</a></p>
+    <div class="logo-container">
+        <img src="logo.png" alt="Logo Zaplar">
+        <h1><span class="zap">Zap</span><span class="lar">Lar</span></h1>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html">Página Inicial</a>
+      <a href="login.html">Login</a>
+      <a href="cadastro-cliente.html" class="btn btn-cadastro">Cadastre-se</a>
+    </nav>
   </header>
 
-  <section class="profissionais">
-    <h2>Profissionais disponíveis</h2>
-
-    <div class="profissional">
-      <h3>João Silva</h3>
-      <p>Encanador experiente com mais de 10 anos de experiência. Atende toda a cidade.</p>
-      <p>Contato: joao@email.com</p>
-    </div>
-
-    <div class="profissional">
-      <h3>Marcos Oliveira</h3>
-      <p>Profissional dedicado, rápido e confiável. Encanador experiente em residências e comércios.</p>
-      <p>Contato: marcos@email.com</p>
-    </div>
-
-    <div class="profissional">
-      <h3>Carlos Souza</h3>
-      <p>Especialista em serviços técnicos e manutenção. Atendimento de segunda a sábado.</p>
-      <p>Contato: carlos@email.com</p>
+  <section class="profissionais container">
+    <h2><i class="fas fa-faucet-drip"></i> Encanadores disponíveis</h2>
+    <div id="lista-profissionais" class="servicos-grid">
+      <p>Carregando profissionais...</p>
     </div>
   </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        &copy; 2025 <span class="zap">Zap</span><span class="lar">Lar</span>. Todos os direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listaProfissionais = document.getElementById('lista-profissionais');
+      const servico = "Encanador";
+      const userCity = localStorage.getItem('userCity') || 'Cidade não definida';
+
+      listaProfissionais.innerHTML = `<p>Buscando encanadores em ${userCity}...</p>`;
+
+      fetch(`http://localhost:3000/prestadores/cidade/${userCity}?servico=${servico}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro na rede ou ao buscar os dados.');
+          }
+          return response.json();
+        })
+        .then(prestadores => {
+          if (prestadores.length === 0) {
+            listaProfissionais.innerHTML = `<p>Nenhum profissional de ${servico} encontrado em ${userCity}.</p>`;
+            return;
+          }
+
+          listaProfissionais.innerHTML = ''; // Limpa a mensagem de carregamento
+
+          prestadores.forEach(prestador => {
+            if (prestador.servico === servico) {
+              const divProfissional = document.createElement('div');
+              divProfissional.classList.add('servico-item');
+              divProfissional.innerHTML = `
+                <h3>${prestador.nome}</h3>
+                <p><strong>Descrição:</strong> ${prestador.descricao}</p>
+                <p><strong>Contato:</strong> ${prestador.email} | ${prestador.telefone}</p>
+              `;
+              listaProfissionais.appendChild(divProfissional);
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          listaProfissionais.innerHTML = '<p style="color: red; font-weight: bold;">Não foi possível carregar a lista de profissionais. Tente novamente mais tarde.</p>';
+        });
+    });
+  </script>
 </body>
 </html>
